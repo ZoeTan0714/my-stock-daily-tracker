@@ -22,6 +22,7 @@ const stockApi = {
       const response = await fetch(
         `${BASE_URL}/eod?access_key=${API_KEY}&symbols=${symbol}&sort=DESC&limit=1`
       );
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -66,7 +67,7 @@ const stockApi = {
       return [];
     }
   }
-
-
 }
+
+export default stockApi; 
 
