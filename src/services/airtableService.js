@@ -1,5 +1,5 @@
-
-const airtble_API_key = 'patCv9CLnTogsKBUh.1aec7509b86f819412bc5d2e7f72ad236a70e995edc429ef7758cf21b17a9c3b'
+require('dotenv').config();  
+const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
 
 const airtableService = {
     getWatclist: async () => {
