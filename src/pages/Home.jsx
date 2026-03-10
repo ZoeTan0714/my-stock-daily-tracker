@@ -33,7 +33,7 @@ const handleSearch = async (query) => {
     setError('');
     setSearchResults([])
 
-    try {
+    {
         saveToSearchHistory(query)
 
         const searchResults = await stockApi.searchStocks (query);
@@ -55,14 +55,8 @@ const handleSearch = async (query) => {
                 })
             }
         }
-
-
-
-
-        
     }
-}
-
+    } 
 }
 
 
