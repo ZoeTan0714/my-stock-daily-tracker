@@ -1,16 +1,15 @@
-# React + Vite
+USER STORY: 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+When launch the website, it will be ./home page by default. There will be a nav bar on the top which includes "Home" and "Watchlist".
 
-Currently, two official plugins are available:
+Home page (./home) 
+• As a user, I can search the stock by company name / stock code
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+• I can also see the 3 search history, and click them to conduct direct search 
 
-## React Compiler
+• When click "search" button / historically searched stock, the stock will be displayed, with a "+" button (to be added to the watch list), or "-" button (to be removed from the watch list)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Watchlist (./home/watchlist)
+• In watchlist, all stocks will be displayed row by row. There will be 3 columns, where "Stock details" on the left takes most of the space, "Your avg price" in the second column, and "Status" in the last column, which calculates the "(Avg price - current stock price) / Avg price * 100%". At the bottom, there should be a "Save" button, which saves the "Your avg price" to Airtable 
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+• In stock details, it includes the stock name & price at the end of the day

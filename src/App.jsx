@@ -1,13 +1,12 @@
 // src/App.jsx
 import React from "react";
-
-
-
-
-
+import { BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
+import NavBar from './components/NavBar'
+import Home from './pages/Home'
+import Watchlist from './pages/Watchlist'
+import './App.css'
 
 const App = () => {
-
   return (
     <Router>
       <div className="App">
@@ -21,10 +20,6 @@ const App = () => {
         </div>
       </div>
     </Router>
-
-
-
-
   );
 }
 
