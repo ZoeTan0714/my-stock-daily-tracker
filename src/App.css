@@ -1,42 +1,64 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.watchlist-table {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  background-color: #667eea;
+  color: white;
+  padding: 1rem;
+  font-weight: bold;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  align-items: center;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row:hover {
+  background-color: #f7fafc;
+}
+
+.stock-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stock-details strong {
+  color: #2d3748;
+  font-size: 1.1rem;
+}
+
+.current-price {
+  color: #48bb78;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.price-date {
+  color: #a0aec0;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+  font-weight: normal;
+}
+
+.empty-watchlist {
   text-align: center;
+  padding: 3rem;
+  color: #718096;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.empty-watchlist p {
+  margin: 0.5rem 0;
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import SearchBar from '../components/SearchBar'
 import StockCard from '../components/StockCard';
-import stockApi from '../services/stockApi';
+import stockApi from '../services/stockAPI';
 import airtableService from '../services/airtableService';
 
 function Home() {
