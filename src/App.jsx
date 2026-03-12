@@ -10,7 +10,7 @@ const App = () => {
   return (
     <Router>
       <div className="App">
-        <Navbar />
+        <NavBar />
         <div className="container">
           <Routes>
             <Route path="/" element={<Navigate to="/home" />} />

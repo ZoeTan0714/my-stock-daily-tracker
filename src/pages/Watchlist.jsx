@@ -5,7 +5,7 @@ import stockApi from '../services/stockAPI'
 function Watchlist() {
     const [watchlistItems, setWatchlistItems] = useState([])
     const [stockPrices, setStockPrices] = useState ({});
-    const [loading, setLoading] = useSTate (ture)
+    const [loading, setLoading] = useState (true)
     // const [saving, setSaving] = useState(false)
     // const [avgPrices, setAvgPrices] = useState({})
 

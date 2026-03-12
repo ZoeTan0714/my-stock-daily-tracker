@@ -1,6 +1,8 @@
 const API_KEY = '0ed3fb863442e349b99c0f1e930d56c2';
 const BASE_URL = 'http://api.marketstack.com/v1';
 
+const companyNames = {};
+
 const stockApi = {
   searchStocks: async (query) => {
       const response = await fetch(`${BASE_URL}/tickers?access_key=${API_KEY}&search=${query}&limit=10`);
@@ -18,7 +20,7 @@ const stockApi = {
         const stockData = data.data[0];
         return {
           symbol: stockData.symbol,
-          name: companyNames[stockData.symbol] || stockData.symbol,
+          name: stockData.name || companyNames[stockData.symbol] || stockData.symbol,
           price: stockData.close,
           date: stockData.date
         };
@@ -33,9 +35,13 @@ const stockApi = {
       
       const data = await response.json();
       
+      if (!data.data || !Array.isArray(data.data)) {
+      return [];
+    }
+
       return data.data.map(stock => ({
         symbol: stock.symbol,
-        name: companyNames[stock.symbol] || stock.symbol,
+        name: stock.name || companyNames[stock.symbol] || stock.symbol,
         price: stock.close,
         date: stock.date
       }));

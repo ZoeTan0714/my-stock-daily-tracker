@@ -31,21 +31,26 @@ const saveToSearchHistory = (query) => {
 };
 
 const handleSearch = async (query) => {
+    setSearchResults(prev => []); 
     setLoading(true)
-    setSearchResults([])
+    setError('');
 
-    {saveToSearchHistory(query)
+    saveToSearchHistory(query)
 
         const searchResults = await stockApi.searchStocks (query);
 
-        if (searchResults.length === 0) {
-            setLoading(false)
-            return;
-        }
+        if (!searchResults || searchResults.length === 0) {
+        setSearchResults([]); 
+        setLoading(false);
+        return;
+    }
 
         const stockWithPrices = []
         
-        for (const stock of searchResultsData) {
+        for (const stock of searchResults) {
+            if (!stock || !stock.symbol) continue;
+            await new Promise(resolve => setTimeout(resolve, 500));
+
             const eodData = await stockApi.getStockEOD(stock.symbol);
             if(eodData) {
                 stockWithPrices.push({
@@ -66,7 +71,7 @@ const handleHistoryClick = (query) => {
 
 const handleAddToWatchlist = async(stock) => {
     await airtableService.addToWatchlist(stock.symbol, stock.name)
-    await loadWatchlist
+    await loadWatchlist();
 }
 
 const handleRemoveFromWatchlist = async (stock) => {
@@ -78,7 +83,7 @@ const handleRemoveFromWatchlist = async (stock) => {
 }
 
 const isStockInWatchlist = (symbol) => {
-    return watchlist.some(item.symbol === symbol)
+    return watchlist.some(item => item.symbol === symbol)
 }
 
 
@@ -107,7 +112,7 @@ return (
                         stock={stock}
                         isInWatchlist={isStockInWatchlist(stock.symbol)}
                         onAddToWatchlist={handleAddToWatchlist}
-                        onRemoveWatchlist={handleRemoveFromWatchlist} 
+                        onRemoveFromWatchlist={handleRemoveFromWatchlist} 
                    /> 
                 ))
             ) : (
@@ -119,7 +124,6 @@ return (
         </div>
     </div>
 )
-}
 }
 
 export default Home;
