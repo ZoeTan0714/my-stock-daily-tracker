@@ -27,7 +27,7 @@ function Watchlist() {
             prices.forEach(price => {
                 priceMap[price.symbol] = price
             })
-            setStockPrices(priceMap)
+        setStockPrices(priceMap)
         }
 
         setLoading(false)
