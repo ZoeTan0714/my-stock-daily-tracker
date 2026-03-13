@@ -88,7 +88,7 @@ function Watchlist() {
         const current = parseFloat(currentPrice);
         if (isNaN(avg) || avg === 0) return 'N/A'; 
 
-        const earnPercent = ((avg - current) / avg) * 100;
+        const earnPercent = ((current - avg) / avg) * 100;
         return earnPercent === -0 ? '0.00' : earnPercent.toFixed(2);
     }
 
