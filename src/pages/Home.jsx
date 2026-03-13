@@ -9,78 +9,100 @@ function Home() {
   const [searchHistory, setSearchHistory] = useState([]);
   const [watchlist, setWatchlist] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error,setError] = useState('');
+  const [error, setError] = useState('');
 
 useEffect(() => {
     const savedHistory = localStorage.getItem('searchHistory');
-    if (savedHistory) {
-        setSearchHistory(JSON.parse(savedHistory))
-    }
+    savedHistory && setSearchHistory(JSON.parse(savedHistory))
     loadWatchlist();
 },[]);
 
-const loadWatchlist = async () => {
-    const watchlistData = await airtableService.getWatchlist()
-    setWatchlist(watchlistData)
-};
+  const loadWatchlist = () => {
+    airtableService.getWatchlist().then(data => {
+      setWatchlist(data || []); 
+    });
+  };
 
-const saveToSearchHistory = (query) => {
-    const updateHistory = [query, ...searchHistory.filter(item => item !== query)].slice(0,3)
-    setSearchHistory(updateHistory)
-    localStorage.setItem('searchHistory', JSON.stringify(updateHistory))
-};
+ const saveToSearchHistory = (query) => {
+    if (!query) return;
+    const updateHistory = [query, ...searchHistory.filter(item => item !== query)].slice(0,3);
+    setSearchHistory(updateHistory);
+    localStorage.setItem('searchHistory', JSON.stringify(updateHistory));
+  };
 
-const handleSearch = async (query) => {
-    setSearchResults(prev => []); 
-    setLoading(true)
+ const handleSearch = (query) => {
+    setSearchResults([]);
+    setLoading(true);
     setError('');
 
-    saveToSearchHistory(query)
-
-        const searchResults = await stockApi.searchStocks (query);
-
-        if (!searchResults || searchResults.length === 0) {
-        setSearchResults([]); 
-        setLoading(false);
-        return;
+    if (!query.trim()) {
+      setError('Please enter a search term');
+      setLoading(false);
+      return;
     }
 
-        const stockWithPrices = []
-        
-        for (const stock of searchResults) {
-            if (!stock || !stock.symbol) continue;
-            await new Promise(resolve => setTimeout(resolve, 500));
+    saveToSearchHistory(query);
 
-            const eodData = await stockApi.getStockEOD(stock.symbol);
-            if(eodData) {
-                stockWithPrices.push({
-                    ...stock,
-                    price: eodData.price,
-                    date: eodData.date
-                })
-            }
+    stockApi.searchStocks(query).then(searchResults => {
+      if (!searchResults || searchResults.length === 0) {
+        setError('Hey Zoe, no stocks found matching your search');
+        setLoading(false);
+        return;
+      }
+      const uniqueStocks = [];
+      const symbolSet = new Set();
+      searchResults.forEach(stock => {
+        if (stock && stock.symbol && !symbolSet.has(stock.symbol)) {
+          symbolSet.add(stock.symbol);
+          uniqueStocks.push(stock);
         }
+      });
 
-    setSearchResults(stockWithPrices);
-    setLoading(false)
-}
+      if (uniqueStocks.length === 0) {
+        setError('No valid stocks found');
+        setLoading(false);
+        return;
+      }
+
+      const symbols = uniqueStocks.map(stock => stock.symbol);
+      stockApi.getMultipleStocksEOD(symbols).then(eodDataList => {
+        const priceMap = {};
+        eodDataList.forEach(item => {
+          item && item.symbol && (priceMap[item.symbol] = item);
+        });
+
+        const stockWithPrices = uniqueStocks.map(stock => ({
+          ...stock,
+          price: priceMap[stock.symbol]?.close || priceMap[stock.symbol]?.price || null,
+          date: priceMap[stock.symbol]?.date || null
+        })).filter(stock => stock.price !== null);
+
+        setSearchResults(stockWithPrices);
+        setLoading(false);
+      });
+    });
+  };
+
 
 const handleHistoryClick = (query) => {
     handleSearch(query)
 }
 
-const handleAddToWatchlist = async(stock) => {
-    await airtableService.addToWatchlist(stock.symbol, stock.name)
-    await loadWatchlist();
-}
+  const handleAddToWatchlist = (stock) => {
+    airtableService.addToWatchlist({
+      symbol: stock.symbol,
+      name: stock.name
+    }).then(result => {
+      if (result) loadWatchlist(); 
+    });
+  };
 
-const handleRemoveFromWatchlist = async (stock) => {
-    const watchlistItem = watchlist.find(item => item.symbol === stock.symbol)
-    if (watchlistItem) {
-        await airtableService.removeFromWatchlist(watchlistItem.id)
-        await loadWatchlist()
-    }
-}
+  const handleRemoveFromWatchlist = (stock) => {
+    const watchlistItem = watchlist.find(item => item.symbol === stock.symbol);
+    watchlistItem && airtableService.removeFromWatchlist(watchlistItem.id).then(result => {
+      if (result) loadWatchlist();
+    });
+  };
 
 const isStockInWatchlist = (symbol) => {
     return watchlist.some(item => item.symbol === symbol)

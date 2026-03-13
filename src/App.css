@@ -6,7 +6,7 @@
 
 .table-header {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 80px 2fr 1fr 1fr 1fr;
   background-color: #667eea;
   color: white;
   padding: 1rem;
@@ -15,7 +15,7 @@
 
 .table-row {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 80px 2fr 1fr 1fr 1fr;
   padding: 1rem;
   border-bottom: 1px solid #e2e8f0;
   align-items: center;
@@ -46,6 +46,12 @@
   font-size: 1.1rem;
 }
 
+.avg-price {
+  color: #2d3748;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
 .price-date {
   color: #a0aec0;
   font-size: 0.8rem;
@@ -61,4 +67,19 @@
 
 .empty-watchlist p {
   margin: 0.5rem 0;
+}
+
+
+.earn-value {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.earn-profit {
+  color: #48bb78; 
+}
+.earn-loss {
+  color: #e53e3e; 
+}
+.earn-na {
+  color: #718096; 
 }

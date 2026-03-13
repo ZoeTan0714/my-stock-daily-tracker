@@ -6,7 +6,12 @@ function Navbar(){
     
     return (
     <nav className="navbar">
-      <div className="nav-brand">Stock Tracker</div>
+      <div className="navbar-item">
+        <Link to="/home" style={{ textDecoration: 'none', color: 'inherit' }}>
+          Stock tracker
+        </Link>
+      </div>
+
       <div className="nav-links">
         <Link to="/home" className={location.pathname === '/home' ? 'active' : ''}>
           Home

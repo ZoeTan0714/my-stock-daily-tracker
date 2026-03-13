@@ -1,5 +1,5 @@
-const AIRTABLE_API_KEY = process.env.VITE_AIRTABLE_API_TOKEN;  
-const AIRTABLE_BASE_ID = process.env.VITE_AIRTABLE_BASE_ID;    
+const AIRTABLE_API_KEY = import.meta.env.VITE_AIRTABLE_API_TOKEN;  
+const AIRTABLE_BASE_ID = import.meta.env.VITE_AIRTABLE_BASE_ID;    
 const AIRTABLE_TABLE_NAME = 'Zoewatchlist';
 
 
@@ -10,31 +10,23 @@ const airtableService = {
         {
         headers: {
           'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-          'Content-Type': 'application/json'
         }
-        }
-       )
+        })
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (!data.records) {
-          return [];
-        }
-
-        const watchlist = data.records.map(record => ({
-          id: record.id,
-          symbol: record.fields.symbol,
-          name: record.fields.name,
-        // avgPrice: record.fields.avgPrice || 0
-        }));
-        return watchlist
-    },
+      if (!response.ok) return [];
+      const data = await response.json();
+      return data.records.map(record => ({
+        id: record.id,
+        symbol: record.fields.Stock,
+        price: record.fields["Avg Price"]
+    }));
+  },
+      
+      
 
     addToWatchlist: async (stock) => {
+    if (!stock.symbol || !stock.name) return false;
+
     const response = await fetch(
       `https://api.airtable.com/v0/apppqte72hYNhkcPS/Zoewatchlist`,
       {
@@ -44,23 +36,13 @@ const airtableService = {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          records: [{
-            fields: {
-              symbol: stock.symbol,
-              name: stock.name,
-            //   avgPrice: 0
-            }
-          }]
+          fields: {
+            "Stock": stock.symbol.trim(),
+        }
         })
       }
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.records[0];
+    )
+    return response.ok;
   },
 
   removeFromWatchlist: async (recordId) => {
@@ -74,36 +56,24 @@ const airtableService = {
       }
     );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data.deleted === true;
-  },
+    if (!response.ok) return false;
+      return await response.json();
+    },
 
-    // updateAvgPrice: async (recordId, avgPrice) => {
-    // const response = await fetch(
-    //   `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`,
-    //   {
-    //     method: 'PATCH',
-    //     headers: {
-    //       'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //       records: [{
-    //         id: recordId,
-    //         fields: {
-    //           avgPrice: parseFloat(avgPrice) || 0
-    //         }
-    //       }]
-    //     })
-    //   }
-    // );
-    
-//     const data = await response.json();
-//     return data.records[0];
-// }
-}
+  updateWatchlistItem: async (recordId, fields) => {
+    const response = await fetch(
+      `https://api.airtable.com/v0/apppqte72hYNhkcPS/Zoewatchlist/${recordId}`,
+      {
+        method: 'PATCH', 
+        headers: {
+          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ fields }) 
+      }
+    );
+    return response.ok; 
+  }
+};
 
 export default airtableService;

@@ -1,8 +1,8 @@
 import React from 'react';
 
-function StockCard ({ stock, isInWatchlist, onAddToWatchlist, onRemoveWatchlist})
+function StockCard ({ stock, isInWatchlist, onAddToWatchlist, onRemoveFromWatchlist})
 {
-    const formattedPrice = stock.price ? `$${stock.price.toFixed(2)}` : 'Pirce unavilable';
+    const formattedPrice = stock.price ? `$${stock.price.toFixed(2)}` : 'Price unavilable';
     const formattedDate = stock.date ? new Date(stock.date).toLocaleDateString('en-US', {
         year: 'numeric',
         month:'short',
